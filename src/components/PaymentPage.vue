@@ -8,34 +8,26 @@
 </template>
 
 <script>
+import axiosInstance from "@/axiosInstance";
+
 export default {
   name: 'PaymentPage',
   methods: {
     testPayment() {
       const subscriptionId = this.$route.params.subscriptionId;
-      const authToken = 'hbqbZvjndlegD7Emm153IVGtBDNYTJFkF0DtxUYN0no=';
-
-      $.ajax({
-        url: 'http://localhost:9999/api/activate',
-        type: 'POST',
-        // dataType: 'json', // 응답값 없이 사용
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`
-        },
-        data: JSON.stringify({
-          subscriptionId
-        }),
-        success: function (data) {
-          console.log('Test payment successful:', data);
-          alert("결제가 완료되었습니다.");
-          window.location.href = "/";
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-          console.error('Test payment failed:', errorThrown);
-          console.error('Server response:', jqXHR.responseText);
-        }
-      });
+      axiosInstance.post('/api/activate', JSON.stringify({
+        subscriptionId
+      })).then(
+          (response) => {
+            console.log('Test payment successful:', response.data);
+            alert("결제가 완료되었습니다.");
+            window.location.href = "/";
+          }
+      ).catch(
+          (error) => {
+            console.error('Test payment failed:', error);
+          }
+      )
     }
   }
 }

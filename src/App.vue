@@ -5,9 +5,10 @@
       <router-link class="header-item" to="/plans">Plans</router-link>
       <router-link class="header-item" to="/options">Option</router-link>
       <a class="header-item" href="http://localhost:9999">Page</a>
+      <input v-model="authToken" @input="useToken" type="text" placeholder="Enter Auth Token Here" class="header-item"/>
     </div>
     <div id="app">
-      <router-view />
+      <router-view/>
     </div>
   </div>
 </template>
@@ -48,5 +49,19 @@ header {
   }
 }
 </style>
-<script setup>
+<script>
+import {tokenManager} from "@/axiosInstance";
+
+export default {
+  data() {
+    return {
+      authToken: tokenManager.token
+    };
+  },
+  methods: {
+    useToken() {
+      tokenManager.token = this.authToken;
+    },
+  },
+};
 </script>

@@ -101,45 +101,33 @@ tr:nth-child(even) {
 
 
 <script>
+import axiosInstance from "@/axiosInstance";
+
 export default {
   name: 'SubscriptionPlans',
 
   methods: {
     enroll(planId) {
-      const customerId = 'someCustomerId';
-      const authToken = 'hbqbZvjndlegD7Emm153IVGtBDNYTJFkF0DtxUYN0no=';
-
-      $.ajax({
-        url: 'http://localhost:9999/api/enroll',
-        type: 'POST',
-        dataType: 'json',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`
-        },
-        data: JSON.stringify({
-          customerId,
-          planId
-        }),
-        success: function(data, textStatus, jqXHR) {
-          console.log('Enrollment successful:', data);
-          if (jqXHR.status === 200 && data.subscriptionId) {
-            // 상태 코드가 200이며 subscriptionId가 응답에 포함된 경우
-            // /payment 라우트로 이동하며 subscriptionId를 파라미터로 전달
-            this.$router.push({
-              name: 'Payment',
-              params: { subscriptionId: data.subscriptionId }
-            });
-          }
-        }.bind(this),  // this context를 보존하기 위해 bind 사용
-        error: function(jqXHR, textStatus, errorThrown) {
-          console.error('Enrollment failed:', errorThrown);
-          // 오류 처리 (예: 사용자에게 오류 메시지 표시)
-        }
-      });
+      const customerId = 'testCustomer';
+      axiosInstance.post('/api/enroll', JSON.stringify({
+        customerId,
+        planId
+      }))
+          .then(
+              (response) => {
+                console.log('Enrollment successful:', response.data);
+                if (response.status === 200 && response.data.subscriptionId) {
+                  // 상태 코드가 200이며 subscriptionId가 응답에 포함된 경우
+                  // /payment 라우트로 이동하며 subscriptionId를 파라미터로 전달
+                  this.$router.push({
+                    name: 'Payment',
+                    params: {subscriptionId: response.data.subscriptionId}
+                  });
+                }
+              }
+          )
     }
   },
-
 
 
   data() {
@@ -158,7 +146,7 @@ export default {
           name: 'Business Standard',
           price: '$12.50/user/month',
           officeApps: 'Desktop & Web version',
-          cloudStorage: '1 TB',
+          cloudStorage: '2 TB',
           emailHosting: 'Yes'
         },
         {
@@ -166,7 +154,7 @@ export default {
           name: 'Business Premium',
           price: '$20.00/user/month',
           officeApps: 'Desktop & Web version',
-          cloudStorage: '1 TB',
+          cloudStorage: '4 TB',
           emailHosting: 'Yes with advanced security'
         },
       ]
