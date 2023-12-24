@@ -25,7 +25,12 @@ const tokenManager = {
 // 요청을 보내기 전 header에 token 추가
 instance.interceptors.request.use((config) => {
     const authToken = tokenManager.token;
-
+    if (authToken === "") {
+        const userInput = confirm("애플리케이션 키를 상단에 넣어주세요. 키를 확인하시겠습니까?");
+        if (userInput === true) {
+            window.location.href = import.meta.env.VITE_SUBSCRIBE_WAS_SERVER_URL + "/applications";
+        }
+    }
     if (authToken) {
         config.headers.Authorization = `Bearer ${authToken}`;
     }

@@ -1,6 +1,6 @@
 <template>
   <div class="subscription-page">
-    <h1 class="page-title">구독 plan 구매 테스트</h1>
+    <h1 class="page-title">구독 plan 구매(TEST)</h1>
 
     <div class="plans-container">
       <div v-for="plan in plans" :key="plan.name" class="plan-section">
@@ -25,7 +25,9 @@
           </tr>
           </tbody>
         </table>
-        <button class="purchase-btn" @click="enroll(plan.planId)">지금 구입</button>
+        <input class="plan-id-input" type="number" placeholder="여기에 Plan ID를 입력하십시오" min="0" v-model="inputPlanId"
+               v-if="plan.button"/>
+        <button class="purchase-btn" @click="enroll(inputPlanId)" v-if="plan.button">지금 구입</button>
       </div>
     </div>
   </div>
@@ -33,15 +35,23 @@
 
 
 <style scoped>
+.plan-id-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-top: 10px;
+}
+
 .plans-container {
   display: flex;
-  flex-direction: row; /* 가로 방향으로 배열 */
-  gap: 30px; /* 플랜 섹션 간의 간격 */
-  justify-content: space-between; /* 각 섹션 간격 동일하게 */
+  flex-direction: row;
+  gap: 30px;
+  justify-content: space-between;
 }
 
 .plan-section {
-  flex: 1; /* 각 섹션의 너비를 동일하게 */
+  flex: 1;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
   padding: 20px;
   border-radius: 5px;
@@ -78,23 +88,23 @@ tr:nth-child(even) {
   transition: background-color 0.3s;
 
   &:hover {
-    background-color: #0056b3; /* 버튼 호버 시 색상 변경 */
+    background-color: #0056b3;
   }
 }
 
 .subscription-page {
   padding: 30px;
-  font-family: 'Arial', sans-serif; /* 예제용 폰트, 원하는 폰트로 변경 가능 */
-  background-color: #f5f5f5; /* 전체 배경색 변경 */
+  font-family: 'Arial', sans-serif;
+  background-color: #f5f5f5;
   min-height: 100vh;
 }
 
 .page-title {
   text-align: center;
   font-size: 2rem;
-  margin-bottom: 50px; /* 제목과 플랜 사이 간격 추가 */
-  color: #333; /* 제목 색상 */
-  border-bottom: 2px solid #007BFF; /* 제목 아래에 파란색 선 추가 */
+  margin-bottom: 50px;
+  color: #333;
+  border-bottom: 2px solid #007BFF;
   padding-bottom: 10px;
 }
 </style>
@@ -126,36 +136,52 @@ export default {
                 }
               }
           )
+          .catch(
+              (error) => {
+                if (error.response.data.startsWith('Invalid application ID')) {
+                  alert('구매 실패: 애플리케이션 ID가 유효하지 않습니다.');
+                } else if (error.response.data.startsWith('Invalid subscription plan ID')) {
+                  alert('구매 실패: 구독Plan ID가 유효하지 않습니다.');
+                } else if (error.response.data.startsWith('Customer already has an active subscription')) {
+                  alert('구매 실패: 이미 구독중인 Plan이 있습니다.');
+                } else {
+                  alert('구매 실패 msg:' + error.response.data);
+                }
+              }
+          )
     }
   },
 
-
   data() {
     return {
+      inputPlanId: null,
       plans: [
         {
           planId: 1,
-          name: 'Business Basic',
-          price: '$5.00/user/month',
+          name: 'Plan A',
+          price: '$00/user/month',
           officeApps: 'Web version',
           cloudStorage: '1 TB',
-          emailHosting: 'Yes'
+          emailHosting: 'Yes',
+          button: true
         },
         {
           planId: 2,
-          name: 'Business Standard',
-          price: '$12.50/user/month',
+          name: 'Plan B',
+          price: '$00/user/month',
           officeApps: 'Desktop & Web version',
           cloudStorage: '2 TB',
-          emailHosting: 'Yes'
+          emailHosting: 'Yes',
+          button: false
         },
         {
           planId: 3,
-          name: 'Business Premium',
-          price: '$20.00/user/month',
+          name: 'Plan C',
+          price: '$00/user/month',
           officeApps: 'Desktop & Web version',
           cloudStorage: '4 TB',
-          emailHosting: 'Yes with advanced security'
+          emailHosting: 'Yes with advanced security',
+          button: false
         },
       ]
     };

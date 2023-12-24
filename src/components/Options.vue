@@ -1,11 +1,5 @@
 <template>
   <div class="subscribed-plans-settings">
-    <h1>구독 플랜 설정</h1>
-    <div class="setting-item">
-      <label for="allowMultipleSubscriptions">중복 구독 허용:</label>
-      <input type="checkbox" id="allowMultipleSubscriptions" v-model="allowMultipleSubscriptions">
-    </div>
-    <button type="submit"></button>
   </div>
 </template>
 

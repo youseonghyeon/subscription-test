@@ -3,15 +3,34 @@
     <div class="header">
       <router-link class="header-item" to="/">Home</router-link>
       <router-link class="header-item" to="/plans">Plans</router-link>
-      <router-link class="header-item" to="/options">Option</router-link>
-      <a class="header-item" href="http://localhost:9999">Page</a>
-      <input v-model="authToken" @input="useToken" type="text" placeholder="Enter Auth Token Here" class="header-item"/>
+      <router-link class="header-item" to="/options">Others</router-link>
+      <a class="header-item" :href="wasServerUrl">SUBSCRIBE</a>
+      <input v-model="authToken" @input="useToken" type="text" placeholder="Application Key" class="header-item"/>
     </div>
     <div id="app">
       <router-view/>
     </div>
   </div>
 </template>
+
+<script>
+import {tokenManager} from "@/axiosInstance";
+
+export default {
+  data() {
+    return {
+      wasServerUrl: import.meta.env.VITE_SUBSCRIBE_WAS_SERVER_URL,
+      authToken: tokenManager.token
+    };
+  },
+  methods: {
+    useToken() {
+      tokenManager.token = this.authToken;
+    },
+  },
+};
+</script>
+
 
 <style scoped>
 .header {
@@ -49,19 +68,3 @@ header {
   }
 }
 </style>
-<script>
-import {tokenManager} from "@/axiosInstance";
-
-export default {
-  data() {
-    return {
-      authToken: tokenManager.token
-    };
-  },
-  methods: {
-    useToken() {
-      tokenManager.token = this.authToken;
-    },
-  },
-};
-</script>
